@@ -20,6 +20,19 @@ namespace Estabilizador
         {
             InitializeComponent();
 
+            serialPort1.PortName = "COM3";  
+            serialPort1.BaudRate = 115200;
+            serialPort1.DataReceived += SerialPort1_DataReceived;
+            try
+            {
+                serialPort1.Open();
+                MessageBox.Show("Puerto abierto");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"No se pudo abrir el puerto: {ex.Message}");
+            }
+
             textBox2.Enabled = false;
             textBox3.Enabled = false;   
             label2.Enabled = false;
@@ -46,9 +59,60 @@ namespace Estabilizador
             button5.Enabled = false;
         }
 
+
         private void SerialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-           
+            try
+            {
+                string data = serialPort1.ReadExisting();
+                this.BeginInvoke(new Action(() => ProcesarTramas(data)));
+            }
+            catch { }
+        }
+
+        private string buffer = "";
+
+        private void ProcesarTramas(string data)
+        {
+            buffer += data;
+
+            while (buffer.Contains("<") && buffer.Contains(">"))
+            {
+                int inicio = buffer.IndexOf('<');
+                int fin = buffer.IndexOf('>', inicio);
+
+                if (fin > inicio)
+                {
+                    string trama = buffer.Substring(inicio + 1, fin - inicio - 1);
+                    buffer = buffer.Substring(fin + 1);
+
+                    InterpretarTrama(trama);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        private void InterpretarTrama(string trama)
+        {
+            string[] partes = trama.Split('=');
+            if (partes.Length != 2) return;
+
+            string clave = partes[0].Trim();
+            string valor = partes[1].Trim();
+
+            switch (clave)
+            {
+                case "PITCH":
+                    label4.Text = $"{valor}°";
+                    break;
+
+                case "ROLL":
+                    label5.Text = $"{valor}°";
+                    break;
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e) //título
@@ -287,6 +351,21 @@ namespace Estabilizador
         private void label17_Click(object sender, EventArgs e) //texto de botones finales de manual
         {
             
+        }
+
+
+
+
+
+
+
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (serialPort1.IsOpen)
+                serialPort1.Close();
+
+            base.OnFormClosing(e);
         }
     }
 }
