@@ -252,9 +252,9 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(312, 255);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(287, 13);
+            this.label14.Size = new System.Drawing.Size(337, 13);
             this.label14.TabIndex = 20;
-            this.label14.Text = "Seleccione la apertura que desea que tenga el movimiento:";
+            this.label14.Text = "Seleccione la apertura en grados que desea que tenga el movimiento:";
             this.label14.Click += new System.EventHandler(this.label14_Click);
             // 
             // label15
@@ -388,11 +388,11 @@
             // 
             this.comboBox3.FormattingEnabled = true;
             this.comboBox3.Items.AddRange(new object[] {
-            "45°",
-            "90°",
-            "135°",
-            "180°"});
-            this.comboBox3.Location = new System.Drawing.Point(605, 252);
+            "45",
+            "90",
+            "135",
+            "180"});
+            this.comboBox3.Location = new System.Drawing.Point(655, 252);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(121, 21);
             this.comboBox3.TabIndex = 34;
