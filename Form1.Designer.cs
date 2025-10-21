@@ -308,7 +308,7 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(540, 13);
+            this.label19.Location = new System.Drawing.Point(35, 35);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(225, 13);
             this.label19.TabIndex = 30;
@@ -320,7 +320,7 @@
             this.groupBox1.Controls.Add(this.radioButton3);
             this.groupBox1.Controls.Add(this.radioButton2);
             this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Location = new System.Drawing.Point(543, 35);
+            this.groupBox1.Location = new System.Drawing.Point(38, 57);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(213, 71);
             this.groupBox1.TabIndex = 31;

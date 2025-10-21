@@ -58,8 +58,6 @@ namespace Estabilizador
             button4.Enabled = false;
             button5.Enabled = false;
 
-            // NUEVO - Ocultar GroupBox de radioButtons al inicio
-            // Cambia "groupBox1" por el nombre real de tu GroupBox
             groupBox1.Visible = false;
             label19.Visible = false;
         }
@@ -126,7 +124,6 @@ namespace Estabilizador
                     ActualizarLabelsMotores(label8.Visible, valor == "1");
                     break;
 
-                // NUEVO - Recibir confirmación de que está listo para comenzar
                 case "LISTO":
                     if (valor == "1")
                     {
@@ -136,25 +133,48 @@ namespace Estabilizador
                     }
                     break;
 
-                // NUEVO - Recibir confirmación de que terminó el movimiento
                 case "FINALIZADO":
                     if (valor == "1")
                     {
-
-                        // Mostrar GroupBox con radioButtons
+                        // muestro los radioButtons
                         groupBox1.Visible = true;
                         label19.Visible = true;
 
-
-                        // Deshabilitar botones de manual
-                        button4.Enabled = false;
-                        button5.Enabled = false;
+                        //button4.Enabled = false;
+                        //button5.Enabled = false;
+                        //textBox1.Visible = false;
+                        //textBox2.Visible = false;
+                        //textBox3.Visible = false;
+                        //label1.Visible = false;
+                        //label2.Visible = false;
+                        //label3.Visible = false;
+                        //label4.Visible = false;
+                        //label5.Visible = false;
+                        //label6.Visible = false;
+                        //label7.Visible = false;
+                        //label8.Visible = false;
+                        //label9.Visible = false;
+                        //label10.Visible = false;
+                        //label11.Visible = false;
+                        //label12.Visible = false;
+                        //label13.Visible = false;
+                        //label14.Visible = false;
+                        //label15.Visible = false;
+                        //label17.Visible = false;
+                        //button1.Visible = false;
+                        //button2.Visible = false;
+                        //button3.Visible = false;
+                        //button4.Visible = false;
+                        //button5.Visible = false;
+                        //comboBox1.Visible = false;
+                        //comboBox2.Visible = false;
+                        //comboBox3.Visible = false;
+                        //comboBox4.Visible = false;
                     }
                     break;
             }
         }
 
-        // NUEVO - Método auxiliar para enviar tramas
         private void EnviarTrama(string clave, string valor)
         {
             if (serialPort1.IsOpen)
@@ -164,7 +184,6 @@ namespace Estabilizador
             }
         }
 
-        // NUEVO - Convertir selección de velocidad a milisegundos
         private int ObtenerVelocidadMs()
         {
             if (comboBox4.SelectedItem == null) return 20;
@@ -174,9 +193,9 @@ namespace Estabilizador
             {
                 case "Muy Lento": return 50;
                 case "Lento": return 30;
-                case "Medio": return 20;
-                case "Rápido": return 10;
-                case "Muy Rápido": return 5;
+                case "Medio": return 15;
+                case "Rápido": return 7;
+                case "Muy Rápido": return 3;
                 default: return 20;
             }
         }
@@ -195,6 +214,35 @@ namespace Estabilizador
         {
             button1.BackColor = Color.LightBlue;
             button2.BackColor = SystemColors.Control;
+
+            textBox1.Visible = true;
+            textBox2.Visible = true;
+            textBox3.Visible = true;
+            label1.Visible = true;
+            label2.Visible = true;
+            label3.Visible = true;
+            label4.Visible = true;
+            label5.Visible = true;
+            label6.Visible = true;
+            label7.Visible = true;
+            label8.Visible = true;
+            label9.Visible = true;
+            label10.Visible = true;
+            label11.Visible = true;
+            label12.Visible = true;
+            label13.Visible = true;
+            label14.Visible = true;
+            label15.Visible = true;
+            label17.Visible = true;
+            button1.Visible = true;
+            button2.Visible = true;
+            button3.Visible = true;
+            button4.Visible = true;
+            button5.Visible = true;
+            comboBox1.Visible = true;
+            comboBox2.Visible = true;
+            comboBox3.Visible = true;
+            comboBox4.Visible = true;
 
             textBox2.Enabled = true;
             textBox3.Enabled = true;
@@ -221,10 +269,8 @@ namespace Estabilizador
             button5.Enabled = false;
             label17.Text = " ";
 
-            // NUEVO - Enviar modo automático a Arduino
             EnviarTrama("MODO", "A");
 
-            // NUEVO - Ocultar GroupBox de radioButtons
             label19.Visible = false; 
             groupBox1.Visible = false;
         }
@@ -233,6 +279,35 @@ namespace Estabilizador
         {
             button2.BackColor = Color.LightBlue;
             button1.BackColor = SystemColors.Control;
+
+            textBox1.Visible = true;
+            textBox2.Visible = true;
+            textBox3.Visible = true;
+            label1.Visible = true;
+            label2.Visible = true;
+            label3.Visible = true;
+            label4.Visible = true;
+            label5.Visible = true;
+            label6.Visible = true;
+            label7.Visible = true;
+            label8.Visible = true;
+            label9.Visible = true;
+            label10.Visible = true;
+            label11.Visible = true;
+            label12.Visible = true;
+            label13.Visible = true;
+            label14.Visible = true;
+            label15.Visible = true;
+            label17.Visible = true;
+            button1.Visible = true;
+            button2.Visible = true;
+            button3.Visible = true;
+            button4.Visible = true;
+            button5.Visible = true;
+            comboBox1.Visible = true;
+            comboBox2.Visible = true;
+            comboBox3.Visible = true;
+            comboBox4.Visible = true;
 
             label12.Enabled = true;
             label13.Enabled = true;
@@ -246,10 +321,8 @@ namespace Estabilizador
             button3.Enabled = true;
             label17.Text = " ";
 
-            // NUEVO - Enviar modo manual a Arduino
             EnviarTrama("MODO", "M");
 
-            // NUEVO - Ocultar GroupBox de radioButtons
             label19.Visible = false;
             groupBox1.Visible = false;
         }
@@ -393,48 +466,35 @@ namespace Estabilizador
 
         private void button4_Click(object sender, EventArgs e) //Botón Preparar
         {
-            // NUEVO - Enviar toda la configuración al Arduino
-
-            // 1. Tipo de movimiento (H o V)
             string tipo = comboBox1.SelectedItem.ToString() == "Horizontal" ? "H" : "V";
             EnviarTrama("MOVTIPO", tipo);
 
-            // 2. Sentido del movimiento
             string sentido = "";
             string sentidoTexto = comboBox2.SelectedItem.ToString();
             switch (sentidoTexto)
             {
                 case "Derecha a Izquierda": sentido = "DI"; break;
                 case "Izquierda a Derecha": sentido = "ID"; break;
-                case "Arriba a Abajo": sentido = "AA"; break;
-                case "Abajo a Arriba": sentido = "BA"; break;
+                case "Arriba a Abajo": sentido = "ArA"; break;
+                case "Abajo a Arriba": sentido = "AbA"; break;
             }
             EnviarTrama("MOVSENTIDO", sentido);
 
-            // 3. Apertura (ángulo) - como son números directos, no necesita Replace
             string apertura = comboBox3.SelectedItem.ToString();
             EnviarTrama("APERTURA", apertura);
 
-            // 4. Velocidad
             int velocidadMs = ObtenerVelocidadMs();
             EnviarTrama("VELOCIDAD", velocidadMs.ToString());
 
-            // 5. Comando PREPARAR
             EnviarTrama("PREPARAR", "1");
-
-            // Actualizar interfaz
             label17.Text = "Preparando estabilizador, espere...";
-            label17.ForeColor = Color.Orange;
             button4.Enabled = false;
         }
 
         private void button5_Click(object sender, EventArgs e) //Botón Comenzar
         {
-            // NUEVO - Enviar comando para comenzar el movimiento
             EnviarTrama("COMENZAR", "1");
-
             label17.Text = "Ejecutando movimiento...";
-            label17.ForeColor = Color.Orange;
             button5.Enabled = false;
         }
 
@@ -468,13 +528,11 @@ namespace Estabilizador
         {
             if (radioButton3.Checked)
             {
-                // NUEVO - Enviar comando REPETIR al Arduino
+                button2.PerformClick();
                 EnviarTrama("REPETIR", "1");
                 label17.Text = "Preparando repetición del movimiento...";
-                label17.ForeColor = Color.Orange;
-
-                // Ocultar GroupBox mientras se ejecuta
                 groupBox1.Visible = false;
+                label19.Visible = false;
             }
         }
 
