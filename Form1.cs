@@ -16,6 +16,9 @@ namespace Estabilizador
     {
         SerialPort serialPort1 = new SerialPort();
 
+        private bool estadoMotorH = false;
+        private bool estadoMotorV = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -60,6 +63,12 @@ namespace Estabilizador
 
             groupBox1.Visible = false;
             label19.Visible = false;
+            label4.Visible = false;
+            label5.Visible = false;
+            label8.Visible = false;
+            label9.Visible = false;
+            label10.Visible = false;
+            label11.Visible = false;
         }
 
 
@@ -109,19 +118,21 @@ namespace Estabilizador
             switch (clave)
             {
                 case "PITCH":
-                    label4.Text = $"{valor}°";
-                    break;
-
-                case "ROLL":
                     label5.Text = $"{valor}°";
                     break;
 
+                case "ROLL":
+                    label4.Text = $"{valor}°";
+                    break;
+
                 case "MH":
-                    ActualizarLabelsMotores(valor == "1", label11.Visible);
+                    estadoMotorH = (valor == "1");
+                    ActualizarLabelsMotores(estadoMotorH, estadoMotorV);
                     break;
 
                 case "MV":
-                    ActualizarLabelsMotores(label8.Visible, valor == "1");
+                    estadoMotorV = (valor == "1");
+                    ActualizarLabelsMotores(estadoMotorH, estadoMotorV);
                     break;
 
                 case "LISTO":
@@ -136,40 +147,41 @@ namespace Estabilizador
                 case "FINALIZADO":
                     if (valor == "1")
                     {
-                        // muestro los radioButtons
                         groupBox1.Visible = true;
                         label19.Visible = true;
 
-                        //button4.Enabled = false;
-                        //button5.Enabled = false;
-                        //textBox1.Visible = false;
-                        //textBox2.Visible = false;
-                        //textBox3.Visible = false;
-                        //label1.Visible = false;
-                        //label2.Visible = false;
-                        //label3.Visible = false;
-                        //label4.Visible = false;
-                        //label5.Visible = false;
-                        //label6.Visible = false;
-                        //label7.Visible = false;
-                        //label8.Visible = false;
-                        //label9.Visible = false;
-                        //label10.Visible = false;
-                        //label11.Visible = false;
-                        //label12.Visible = false;
-                        //label13.Visible = false;
-                        //label14.Visible = false;
-                        //label15.Visible = false;
-                        //label17.Visible = false;
-                        //button1.Visible = false;
-                        //button2.Visible = false;
-                        //button3.Visible = false;
-                        //button4.Visible = false;
-                        //button5.Visible = false;
-                        //comboBox1.Visible = false;
-                        //comboBox2.Visible = false;
-                        //comboBox3.Visible = false;
-                        //comboBox4.Visible = false;
+                        radioButton1.Checked = false;
+                        radioButton2.Checked = false;
+                        radioButton3.Checked = false;
+
+                        textBox1.Visible = false;
+                        textBox2.Visible = false;
+                        textBox3.Visible = false;
+                        label1.Visible = false;
+                        label2.Visible = false;
+                        label3.Visible = false;
+                        label4.Visible = false;
+                        label5.Visible = false;
+                        label6.Visible = false;
+                        label7.Visible = false;
+                        label8.Visible = false;
+                        label9.Visible = false;
+                        label10.Visible = false;
+                        label11.Visible = false;
+                        label12.Visible = false;
+                        label13.Visible = false;
+                        label14.Visible = false;
+                        label15.Visible = false;
+                        label17.Visible = false;
+                        button1.Visible = false;
+                        button2.Visible = false;
+                        button3.Visible = false;
+                        button4.Visible = false;
+                        button5.Visible = false;
+                        comboBox1.Visible = false;
+                        comboBox2.Visible = false;
+                        comboBox3.Visible = false;
+                        comboBox4.Visible = false;
                     }
                     break;
             }
@@ -290,10 +302,10 @@ namespace Estabilizador
             label5.Visible = true;
             label6.Visible = true;
             label7.Visible = true;
-            label8.Visible = true;
-            label9.Visible = true;
-            label10.Visible = true;
-            label11.Visible = true;
+            label8.Visible = false;
+            label9.Visible = false;
+            label10.Visible = false;
+            label11.Visible = false;
             label12.Visible = true;
             label13.Visible = true;
             label14.Visible = true;
@@ -309,6 +321,18 @@ namespace Estabilizador
             comboBox3.Visible = true;
             comboBox4.Visible = true;
 
+            textBox2.Enabled = true;
+            textBox3.Enabled = true;
+            label2.Enabled = true;
+            label3.Enabled = true;
+            label4.Enabled = true;
+            label5.Enabled = true;
+            label6.Enabled = true;
+            label7.Enabled = true;
+            label8.Enabled = true;
+            label9.Enabled = true;
+            label10.Enabled = true;
+            label11.Enabled = true; 
             label12.Enabled = true;
             label13.Enabled = true;
             label14.Enabled = true;
@@ -449,8 +473,10 @@ namespace Estabilizador
 
         }
 
-        private void button3_Click(object sender, EventArgs e) //Botón Chequear
+        private void button3_Click(object sender, EventArgs e) //Botón Controlar
         {
+            button3.BackColor = Color.LightBlue;
+
             if (comboBox1.SelectedIndex == -1 || comboBox2.SelectedIndex == -1 || comboBox3.SelectedIndex == -1 || comboBox4.SelectedIndex == -1)
             {
                 label17.Text = "Por favor, complete todos los datos";
@@ -468,6 +494,7 @@ namespace Estabilizador
         {
             string tipo = comboBox1.SelectedItem.ToString() == "Horizontal" ? "H" : "V";
             EnviarTrama("MOVTIPO", tipo);
+            button4.BackColor = Color.LightBlue;
 
             string sentido = "";
             string sentidoTexto = comboBox2.SelectedItem.ToString();
@@ -494,6 +521,7 @@ namespace Estabilizador
         private void button5_Click(object sender, EventArgs e) //Botón Comenzar
         {
             EnviarTrama("COMENZAR", "1");
+            button5.BackColor = Color.LightBlue;
             label17.Text = "Ejecutando movimiento...";
             button5.Enabled = false;
         }
@@ -528,11 +556,54 @@ namespace Estabilizador
         {
             if (radioButton3.Checked)
             {
-                button2.PerformClick();
-                EnviarTrama("REPETIR", "1");
-                label17.Text = "Preparando repetición del movimiento...";
+                textBox1.Visible = true;
+                textBox2.Visible = true;
+                textBox3.Visible = true;
+                label1.Visible = true;
+                label2.Visible = true;
+                label3.Visible = true;
+                label4.Visible = true;
+                label5.Visible = true;
+                label6.Visible = true;
+                label7.Visible = true;
+                label8.Visible = true;
+                label9.Visible = true;
+                label10.Visible = true;
+                label11.Visible = true;
+                label12.Visible = true;
+                label13.Visible = true;
+                label14.Visible = true;
+                label15.Visible = true;
+                label17.Visible = true;
+                button1.Visible = true;
+                button2.Visible = true;
+                button3.Visible = true;
+                button4.Visible = true;
+                button5.Visible = true;
+                comboBox1.Visible = true;
+                comboBox2.Visible = true;
+                comboBox3.Visible = true;
+                comboBox4.Visible = true;
+
                 groupBox1.Visible = false;
                 label19.Visible = false;
+
+                label12.Enabled = false;
+                label13.Enabled = false;
+                label14.Enabled = false;
+                label15.Enabled = false;
+                comboBox1.Enabled = false;
+                comboBox2.Enabled = false;
+                comboBox3.Enabled = false;
+                comboBox4.Enabled = false;
+                button3.Enabled = false;
+                button4.Enabled = false;
+
+                EnviarTrama("REPETIR", "1");
+
+                radioButton1.Checked = false;
+                radioButton2.Checked = false;
+                radioButton3.Checked = false;
             }
         }
 
@@ -547,6 +618,11 @@ namespace Estabilizador
                 serialPort1.Close();
 
             base.OnFormClosing(e);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
