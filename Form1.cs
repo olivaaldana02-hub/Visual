@@ -7,14 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO.Ports;
-
+using System.Net.Sockets;
+using System.Threading;
 
 namespace Estabilizador
 {
     public partial class Form1 : Form
     {
-        SerialPort serialPort1 = new SerialPort();
+        private TcpClient tcpClient;
+        private NetworkStream stream;
+        private Thread receiveThread;
+        private bool isConnected = false;
+
+        private const string ESP32_IP = "10.204.137.190";  
+        private const int ESP32_PORT = 80;
 
         private bool estadoMotorH = false;
         private bool estadoMotorV = false;
@@ -23,18 +29,30 @@ namespace Estabilizador
         {
             InitializeComponent();
 
-            serialPort1.PortName = "COM3";
-            serialPort1.BaudRate = 115200;
-            serialPort1.DataReceived += SerialPort1_DataReceived;
             try
             {
-                serialPort1.Open();
-                MessageBox.Show("Puerto abierto");
+                tcpClient = new TcpClient();
+                tcpClient.Connect(ESP32_IP, ESP32_PORT);
+                stream = tcpClient.GetStream();
+                isConnected = true;
+
+                receiveThread = new Thread(RecibirDatos);
+                receiveThread.IsBackground = true;
+                receiveThread.Start();
+
+                MessageBox.Show($"Conectado a ESP32 en {ESP32_IP}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No se pudo abrir el puerto: {ex.Message}");
+                MessageBox.Show($"No se pudo conectar a la ESP32: {ex.Message}");
             }
+
+            textBox1.Visible = true;
+            textBox2.Visible = true;
+            textBox3.Visible = true;
+            label1.Visible = true;
+            button1.Visible = true;
+            button2.Visible = true;
 
             textBox2.Enabled = false;
             textBox3.Enabled = false;
@@ -71,15 +89,33 @@ namespace Estabilizador
             label11.Visible = false;
         }
 
-
-        private void SerialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void RecibirDatos()
         {
-            try
+            byte[] buffer = new byte[1024];
+            string dataBuffer = "";
+
+            while (isConnected)
             {
-                string data = serialPort1.ReadExisting();
-                this.BeginInvoke(new Action(() => ProcesarTramas(data)));
+                try
+                {
+                    if (stream.DataAvailable)
+                    {
+                        int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                        string data = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                        this.BeginInvoke(new Action(() => ProcesarTramas(data)));
+                    }
+                    Thread.Sleep(10);
+                }
+                catch (Exception ex)
+                {
+                    isConnected = false;
+                    this.BeginInvoke(new Action(() =>
+                        MessageBox.Show($"Conexión perdida: {ex.Message}")
+                    ));
+                    break;
+                }
             }
-            catch { }
         }
 
         private string buffer = "";
@@ -189,10 +225,18 @@ namespace Estabilizador
 
         private void EnviarTrama(string clave, string valor)
         {
-            if (serialPort1.IsOpen)
+            if (isConnected && stream != null)
             {
-                string trama = $"<{clave}={valor}>\n";
-                serialPort1.Write(trama);
+                try
+                {
+                    string trama = $"<{clave}={valor}>\n";
+                    byte[] data = Encoding.ASCII.GetBytes(trama);
+                    stream.Write(data, 0, data.Length);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al enviar: {ex.Message}");
+                }
             }
         }
 
@@ -212,17 +256,17 @@ namespace Estabilizador
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e) //título
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void label1_Click(object sender, EventArgs e) //elegir modo:
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void button1_Click(object sender, EventArgs e) //Automático
+        private void button1_Click(object sender, EventArgs e)
         {
             button1.BackColor = Color.LightBlue;
             button2.BackColor = SystemColors.Control;
@@ -283,11 +327,11 @@ namespace Estabilizador
 
             EnviarTrama("MODO", "A");
 
-            label19.Visible = false; 
+            label19.Visible = false;
             groupBox1.Visible = false;
         }
 
-        private void button2_Click(object sender, EventArgs e) //Manual
+        private void button2_Click(object sender, EventArgs e)
         {
             button2.BackColor = Color.LightBlue;
             button1.BackColor = SystemColors.Control;
@@ -332,7 +376,7 @@ namespace Estabilizador
             label8.Enabled = true;
             label9.Enabled = true;
             label10.Enabled = true;
-            label11.Enabled = true; 
+            label11.Enabled = true;
             label12.Enabled = true;
             label13.Enabled = true;
             label14.Enabled = true;
@@ -351,27 +395,27 @@ namespace Estabilizador
             groupBox1.Visible = false;
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e) //Inclinación
+        private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void label2_Click(object sender, EventArgs e) //X
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label3_Click(object sender, EventArgs e) //Y
+        private void label3_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label4_Click(object sender, EventArgs e) //Dato X
+        private void label4_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label5_Click(object sender, EventArgs e) //Dato Y
+        private void label5_Click(object sender, EventArgs e)
         {
 
         }
@@ -385,52 +429,52 @@ namespace Estabilizador
             label10.Visible = !motorV;
         }
 
-        private void textBox3_TextChanged(object sender, EventArgs e) //Motores
+        private void textBox3_TextChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void label6_Click(object sender, EventArgs e) //Horizontal
+        private void label6_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label8_Click(object sender, EventArgs e) //ON h
+        private void label8_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label9_Click(object sender, EventArgs e) //OFF h
+        private void label9_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label7_Click(object sender, EventArgs e) //Vertical
+        private void label7_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label11_Click(object sender, EventArgs e) //ON v
+        private void label11_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label10_Click(object sender, EventArgs e) //OFF v
+        private void label10_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label12_Click(object sender, EventArgs e) //Conf Manual
+        private void label12_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label13_Click(object sender, EventArgs e) //Movimiento
+        private void label13_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) //horiz - vertical
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             comboBox2.Items.Clear();
 
@@ -448,32 +492,32 @@ namespace Estabilizador
             comboBox2.SelectedIndex = 0;
         }
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e) //sentido
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void label14_Click(object sender, EventArgs e) //Apertura
+        private void label14_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e) //grados
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void label15_Click(object sender, EventArgs e) //Velocidad
+        private void label15_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e) //elegir velocidad
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void button3_Click(object sender, EventArgs e) //Botón Controlar
+        private void button3_Click(object sender, EventArgs e)
         {
             button3.BackColor = Color.LightBlue;
 
@@ -490,7 +534,7 @@ namespace Estabilizador
             }
         }
 
-        private void button4_Click(object sender, EventArgs e) //Botón Preparar
+        private void button4_Click(object sender, EventArgs e)
         {
             string tipo = comboBox1.SelectedItem.ToString() == "Horizontal" ? "H" : "V";
             EnviarTrama("MOVTIPO", tipo);
@@ -518,7 +562,7 @@ namespace Estabilizador
             button4.Enabled = false;
         }
 
-        private void button5_Click(object sender, EventArgs e) //Botón Comenzar
+        private void button5_Click(object sender, EventArgs e)
         {
             EnviarTrama("COMENZAR", "1");
             button5.BackColor = Color.LightBlue;
@@ -526,13 +570,12 @@ namespace Estabilizador
             button5.Enabled = false;
         }
 
-
-        private void label19_Click(object sender, EventArgs e) //Texto de continuar
+        private void label19_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e) //Automático
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton1.Checked)
             {
@@ -542,7 +585,7 @@ namespace Estabilizador
             }
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e) //Manual
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton2.Checked)
             {
@@ -552,7 +595,7 @@ namespace Estabilizador
             }
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e) //Repetir
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton3.Checked)
             {
@@ -607,15 +650,23 @@ namespace Estabilizador
             }
         }
 
-        private void label17_Click(object sender, EventArgs e) //texto de botones finales de manual
+        private void label17_Click(object sender, EventArgs e)
         {
 
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (serialPort1.IsOpen)
-                serialPort1.Close();
+            isConnected = false;
+
+            if (stream != null)
+                stream.Close();
+
+            if (tcpClient != null)
+                tcpClient.Close();
+
+            if (receiveThread != null && receiveThread.IsAlive)
+                receiveThread.Join(1000);
 
             base.OnFormClosing(e);
         }
