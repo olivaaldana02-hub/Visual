@@ -39,20 +39,11 @@ namespace Estabilizador
                 receiveThread = new Thread(RecibirDatos);
                 receiveThread.IsBackground = true;
                 receiveThread.Start();
-
-                MessageBox.Show($"Conectado a ESP32 en {ESP32_IP}");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"No se pudo conectar a la ESP32: {ex.Message}");
             }
-
-            textBox1.Visible = true;
-            textBox2.Visible = true;
-            textBox3.Visible = true;
-            label1.Visible = true;
-            button1.Visible = true;
-            button2.Visible = true;
 
             textBox2.Enabled = false;
             textBox3.Enabled = false;
@@ -79,8 +70,6 @@ namespace Estabilizador
             button4.Enabled = false;
             button5.Enabled = false;
 
-            groupBox1.Visible = false;
-            label19.Visible = false;
             label4.Visible = false;
             label5.Visible = false;
             label8.Visible = false;
@@ -183,41 +172,75 @@ namespace Estabilizador
                 case "FINALIZADO":
                     if (valor == "1")
                     {
-                        groupBox1.Visible = true;
-                        label19.Visible = true;
+                        Form2 formFin = null;
 
-                        radioButton1.Checked = false;
-                        radioButton2.Checked = false;
-                        radioButton3.Checked = false;
+                        while (true)
+                        {
+                            formFin = new Form2();
+                            formFin.ShowDialog();
 
-                        textBox1.Visible = false;
-                        textBox2.Visible = false;
-                        textBox3.Visible = false;
-                        label1.Visible = false;
-                        label2.Visible = false;
-                        label3.Visible = false;
-                        label4.Visible = false;
-                        label5.Visible = false;
-                        label6.Visible = false;
-                        label7.Visible = false;
-                        label8.Visible = false;
-                        label9.Visible = false;
-                        label10.Visible = false;
-                        label11.Visible = false;
-                        label12.Visible = false;
-                        label13.Visible = false;
-                        label14.Visible = false;
-                        label15.Visible = false;
-                        label17.Visible = false;
-                        button1.Visible = false;
-                        button2.Visible = false;
-                        button3.Visible = false;
-                        button4.Visible = false;
-                        button5.Visible = false;
-                        comboBox1.Visible = false;
-                        comboBox2.Visible = false;
-                        comboBox3.Visible = false;
-                        comboBox4.Visible = false;
+                            if (!string.IsNullOrEmpty(formFin.OpcionSeleccionada))
+                            {
+                                break;
+                            }
+
+                            MessageBox.Show("Debe seleccionar una opción antes de continuar");
+                        }
+
+                        switch (formFin.OpcionSeleccionada)
+                        {
+                            case "Automatico":
+                                button1.PerformClick();
+                                break;
+
+                            case "Manual":
+                                button2.PerformClick();
+                                break;
+
+                            case "Repetir":
+                                textBox1.Visible = true;
+                                textBox2.Visible = true;
+                                textBox3.Visible = true;
+                                label1.Visible = true;
+                                label2.Visible = true;
+                                label3.Visible = true;
+                                label4.Visible = true;
+                                label5.Visible = true;
+                                label6.Visible = true;
+                                label7.Visible = true;
+                                label8.Visible = true;
+                                label9.Visible = true;
+                                label10.Visible = true;
+                                label11.Visible = true;
+                                label12.Visible = true;
+                                label13.Visible = true;
+                                label14.Visible = true;
+                                label15.Visible = true;
+                                label17.Visible = true;
+                                button1.Visible = true;
+                                button2.Visible = true;
+                                button3.Visible = true;
+                                button4.Visible = true;
+                                button5.Visible = true;
+                                comboBox1.Visible = true;
+                                comboBox2.Visible = true;
+                                comboBox3.Visible = true;
+                                comboBox4.Visible = true;
+
+                                label12.Enabled = false;
+                                label13.Enabled = false;
+                                label14.Enabled = false;
+                                label15.Enabled = false;
+                                comboBox1.Enabled = false;
+                                comboBox2.Enabled = false;
+                                comboBox3.Enabled = false;
+                                comboBox4.Enabled = false;
+                                button3.Enabled = false;
+                                button4.Enabled = false;
+
+                                EnviarTrama("REPETIR", "1");
+                                break;
+                        }
                     }
                     break;
             }
@@ -326,9 +349,6 @@ namespace Estabilizador
             label17.Text = " ";
 
             EnviarTrama("MODO", "A");
-
-            label19.Visible = false;
-            groupBox1.Visible = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -390,9 +410,6 @@ namespace Estabilizador
             label17.Text = " ";
 
             EnviarTrama("MODO", "M");
-
-            label19.Visible = false;
-            groupBox1.Visible = false;
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
@@ -569,87 +586,7 @@ namespace Estabilizador
             label17.Text = "Ejecutando movimiento...";
             button5.Enabled = false;
         }
-
-        private void label19_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButton1.Checked)
-            {
-                button1.PerformClick();
-                button1.BackColor = Color.LightBlue;
-                button2.BackColor = SystemColors.Control;
-            }
-        }
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButton2.Checked)
-            {
-                button2.PerformClick();
-                button2.BackColor = Color.LightBlue;
-                button1.BackColor = SystemColors.Control;
-            }
-        }
-
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButton3.Checked)
-            {
-                textBox1.Visible = true;
-                textBox2.Visible = true;
-                textBox3.Visible = true;
-                label1.Visible = true;
-                label2.Visible = true;
-                label3.Visible = true;
-                label4.Visible = true;
-                label5.Visible = true;
-                label6.Visible = true;
-                label7.Visible = true;
-                label8.Visible = true;
-                label9.Visible = true;
-                label10.Visible = true;
-                label11.Visible = true;
-                label12.Visible = true;
-                label13.Visible = true;
-                label14.Visible = true;
-                label15.Visible = true;
-                label17.Visible = true;
-                button1.Visible = true;
-                button2.Visible = true;
-                button3.Visible = true;
-                button4.Visible = true;
-                button5.Visible = true;
-                comboBox1.Visible = true;
-                comboBox2.Visible = true;
-                comboBox3.Visible = true;
-                comboBox4.Visible = true;
-
-                groupBox1.Visible = false;
-                label19.Visible = false;
-
-                label12.Enabled = false;
-                label13.Enabled = false;
-                label14.Enabled = false;
-                label15.Enabled = false;
-                comboBox1.Enabled = false;
-                comboBox2.Enabled = false;
-                comboBox3.Enabled = false;
-                comboBox4.Enabled = false;
-                button3.Enabled = false;
-                button4.Enabled = false;
-
-                EnviarTrama("REPETIR", "1");
-
-                radioButton1.Checked = false;
-                radioButton2.Checked = false;
-                radioButton3.Checked = false;
-            }
-        }
-
+       
         private void label17_Click(object sender, EventArgs e)
         {
 
