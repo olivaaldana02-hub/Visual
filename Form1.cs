@@ -172,75 +172,69 @@ namespace Estabilizador
                 case "FINALIZADO":
                     if (valor == "1")
                     {
-                        Form2 formFin = null;
-
-                        while (true)
+                        this.Invoke(new Action(() =>
                         {
-                            formFin = new Form2();
-                            formFin.ShowDialog();
+                            Form2 formFin = new Form2();
+                            DialogResult result = formFin.ShowDialog(this);
 
-                            if (!string.IsNullOrEmpty(formFin.OpcionSeleccionada))
+                            if (result == DialogResult.OK && !string.IsNullOrEmpty(formFin.OpcionSeleccionada))
                             {
-                                break;
+                                switch (formFin.OpcionSeleccionada)
+                                {
+                                    case "Automatico":
+                                        button1.PerformClick();
+                                        break;
+
+                                    case "Manual":
+                                        button2.PerformClick();
+                                        break;
+
+                                    case "Repetir":
+                                        textBox1.Visible = true;
+                                        textBox2.Visible = true;
+                                        textBox3.Visible = true;
+                                        label1.Visible = true;
+                                        label2.Visible = true;
+                                        label3.Visible = true;
+                                        label4.Visible = true;
+                                        label5.Visible = true;
+                                        label6.Visible = true;
+                                        label7.Visible = true;
+                                        label8.Visible = true;
+                                        label9.Visible = true;
+                                        label10.Visible = true;
+                                        label11.Visible = true;
+                                        label12.Visible = true;
+                                        label13.Visible = true;
+                                        label14.Visible = true;
+                                        label15.Visible = true;
+                                        label17.Visible = true;
+                                        button1.Visible = true;
+                                        button2.Visible = true;
+                                        button3.Visible = true;
+                                        button4.Visible = true;
+                                        button5.Visible = true;
+                                        comboBox1.Visible = true;
+                                        comboBox2.Visible = true;
+                                        comboBox3.Visible = true;
+                                        comboBox4.Visible = true;
+
+                                        label12.Enabled = false;
+                                        label13.Enabled = false;
+                                        label14.Enabled = false;
+                                        label15.Enabled = false;
+                                        comboBox1.Enabled = false;
+                                        comboBox2.Enabled = false;
+                                        comboBox3.Enabled = false;
+                                        comboBox4.Enabled = false;
+                                        button3.Enabled = false;
+                                        button4.Enabled = false;
+
+                                        EnviarTrama("REPETIR", "1");
+                                        break;
+                                }
                             }
-
-                            MessageBox.Show("Debe seleccionar una opción antes de continuar");
-                        }
-
-                        switch (formFin.OpcionSeleccionada)
-                        {
-                            case "Automatico":
-                                button1.PerformClick();
-                                break;
-
-                            case "Manual":
-                                button2.PerformClick();
-                                break;
-
-                            case "Repetir":
-                                textBox1.Visible = true;
-                                textBox2.Visible = true;
-                                textBox3.Visible = true;
-                                label1.Visible = true;
-                                label2.Visible = true;
-                                label3.Visible = true;
-                                label4.Visible = true;
-                                label5.Visible = true;
-                                label6.Visible = true;
-                                label7.Visible = true;
-                                label8.Visible = true;
-                                label9.Visible = true;
-                                label10.Visible = true;
-                                label11.Visible = true;
-                                label12.Visible = true;
-                                label13.Visible = true;
-                                label14.Visible = true;
-                                label15.Visible = true;
-                                label17.Visible = true;
-                                button1.Visible = true;
-                                button2.Visible = true;
-                                button3.Visible = true;
-                                button4.Visible = true;
-                                button5.Visible = true;
-                                comboBox1.Visible = true;
-                                comboBox2.Visible = true;
-                                comboBox3.Visible = true;
-                                comboBox4.Visible = true;
-
-                                label12.Enabled = false;
-                                label13.Enabled = false;
-                                label14.Enabled = false;
-                                label15.Enabled = false;
-                                comboBox1.Enabled = false;
-                                comboBox2.Enabled = false;
-                                comboBox3.Enabled = false;
-                                comboBox4.Enabled = false;
-                                button3.Enabled = false;
-                                button4.Enabled = false;
-
-                                EnviarTrama("REPETIR", "1");
-                                break;
-                        }
+                        }));
                     }
                     break;
             }
